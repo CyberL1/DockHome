@@ -24,7 +24,7 @@
   }
 
   function openContainer(appId: string) {
-    window.open(`//${appId}.${location.host}`, "_blank");
+    window.open(`//${appId}.${page.data.domain}`, "_blank");
     closeMenu();
   }
 
