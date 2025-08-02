@@ -49,7 +49,7 @@
         </div>
         <a
           class="info"
-          href={`//${container.id}.${page.url.host}`}
+          href={`//${container.name}.${page.data.domain}`}
           target="_blank"
         >
           <img
@@ -66,7 +66,7 @@
 
 {#if menuVisible}
   <div class="menu" style="left: {menuX}px; top: {menuY}px;">
-    <button class="item" onclick={() => openContainer(menuData.id)}>
+    <button class="item" onclick={() => openContainer(menuData.name)}>
       Open
     </button>
   </div>
