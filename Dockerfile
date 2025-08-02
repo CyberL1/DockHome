@@ -10,7 +10,7 @@ FROM golang:alpine AS builder
 WORKDIR /build
 
 COPY . .
-COPY --from=web-builder /build/dist dist
+COPY --from=web-builder /build/build build
 
 RUN go build -ldflags "-s -w" -o dockhome
 
