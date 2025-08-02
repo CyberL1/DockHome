@@ -36,11 +36,6 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-      - name: Setup Node
-        uses: actions/setup-node@v4
-      - name: Build web
-        working-directory: web
-        run: npm i -D && npm run build
       - name: Build and push Docker image
         id: push
         uses: docker/build-push-action@v6
