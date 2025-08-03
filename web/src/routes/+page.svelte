@@ -80,7 +80,6 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(131px, 1fr));
     gap: 20px;
-    margin: 20px;
     width: 100%;
   }
 
