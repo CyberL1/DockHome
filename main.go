@@ -57,6 +57,7 @@ func main() {
 				Id:   container.ID,
 				Name: strings.Split(container.Names[0], "/")[1],
 				Icon: container.Labels["Home.icon"],
+				Alias: container.Labels["Dockport.alias"],
 			}
 
 			response.Containers = append(response.Containers, containerData)
