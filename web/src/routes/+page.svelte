@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { invalidate } from "$app/navigation";
   import { page } from "$app/state";
   import type { ContainerData } from "$lib/types/ContainerData";
   import { onMount } from "svelte";
@@ -32,6 +33,15 @@
 
     window.addEventListener("click", handler);
     return () => window.removeEventListener("click", handler);
+  });
+
+  // Invalidate data every 3 seconds
+  onMount(() => {
+    const interval = setInterval(() => {
+      invalidate("/api/data");
+    }, 3000);
+
+    return () => clearInterval(interval);
   });
 </script>
 
