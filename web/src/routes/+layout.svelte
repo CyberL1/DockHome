@@ -29,6 +29,7 @@
   header {
     background-color: #24292e;
     padding: 10px 20px;
+    user-select: none;
   }
 
   nav {
