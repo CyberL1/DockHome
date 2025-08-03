@@ -34,7 +34,7 @@ func main() {
 		var fileContent []byte
 		fileContent, err := web.BuildDir.ReadFile(filepath.Join("build", path))
 		if err != nil {
-			fileContent, _ = web.BuildDir.ReadFile(filepath.Join("build", "fallback.html"))
+			http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		}
 
 		w.Header().Set("Content-Type", mime.TypeByExtension(ext))
@@ -54,9 +54,9 @@ func main() {
 
 		for _, container := range containers {
 			containerData := types.ContainerData{
-				Id:   container.ID,
-				Name: strings.Split(container.Names[0], "/")[1],
-				Icon: container.Labels["Home.icon"],
+				Id:    container.ID,
+				Name:  strings.Split(container.Names[0], "/")[1],
+				Icon:  container.Labels["Home.icon"],
 				Alias: container.Labels["Dockport.alias"],
 			}
 
