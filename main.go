@@ -48,7 +48,7 @@ func main() {
 			All: true,
 		})
 
-		response := types.NeededDataType{
+		response := types.NeededData{
 			Domain: os.Getenv("DOMAIN"),
 		}
 

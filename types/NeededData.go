@@ -1,6 +1,6 @@
 package types
 
-type NeededDataType struct {
+type NeededData struct {
 	Domain     string          `json:"domain"`
 	Containers []ContainerData `json:"containers"`
 }
