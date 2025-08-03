@@ -48,16 +48,14 @@
           </button>
         </div>
         <a
-          class="info"
           href={`//${container.alias || container.name}.${page.data.domain}`}
           target="_blank"
         >
           <img
-            class="icon"
             src={container.icon ? container.icon : "https://placehold.co/60"}
             alt="An icon"
           />
-          <span class="name">{container.name}</span>
+          <span>{container.name}</span>
         </a>
       </div>
     </div>
@@ -66,10 +64,7 @@
 
 {#if menuVisible}
   <div class="menu" style="left: {menuX}px; top: {menuY}px;">
-    <button
-      class="item"
-      onclick={() => openContainer(menuData.alias || menuData.name)}
-    >
+    <button onclick={() => openContainer(menuData.alias || menuData.name)}>
       Open
     </button>
   </div>
@@ -80,7 +75,6 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(131px, 1fr));
     gap: 20px;
-    width: 100%;
   }
 
   .app {
@@ -94,7 +88,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
   }
 
   .app > .content {
@@ -111,30 +104,29 @@
     height: 25px;
   }
 
-  .app > .content > .info {
+  .app > .content > a {
     text-decoration: none;
     display: flex;
     flex-direction: column;
     align-items: center;
   }
 
-  .apps > .app > .content > .info > .icon {
+  .apps > .app > .content > a > img {
     width: 60px;
     height: 60px;
   }
 
-  .apps > .app > .content > .info > .name {
+  .apps > .app > .content > a > span {
     font-size: 1.2em;
     display: block;
     color: #333;
     overflow: hidden;
     text-overflow: ellipsis;
     text-wrap: nowrap;
-    height: 20px;
-    width: 92px;
+    width: 95px;
   }
 
-  .apps > .app > .content > .info:hover > .name {
+  .apps > .app > .content > a:hover > span {
     color: green;
   }
 
@@ -144,26 +136,22 @@
     border: 1px solid #ccc;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     min-width: 150px;
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
     border-radius: 8px;
     user-select: none;
     z-index: 1000;
   }
 
-  .menu > button.item {
+  .menu > button {
     cursor: pointer;
     display: flex;
     background: none;
     border: none;
     width: 100%;
     padding: 10px 16px;
-    text-align: left;
     font-size: 1em;
   }
 
-  .menu > button.item:hover {
+  .menu > button:hover {
     background-color: lightgrey;
   }
 </style>

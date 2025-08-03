@@ -1,5 +1,5 @@
 <header>
-  <nav class="navbar">
+  <nav>
     <div class="left">
       <a href="/" class="logo">DockHome</a>
       <a href="https://github.com/CyberL1/DockHome" target="_blank">
@@ -22,7 +22,8 @@
   }
 
   main {
-    margin: 20px;
+    margin-top: 20px;
+    margin-left: 20px;
   }
 
   header {
@@ -30,14 +31,13 @@
     padding: 10px 20px;
   }
 
-  .navbar {
+  nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 0 auto;
   }
 
-  .navbar a {
+  nav a {
     color: #ffffff;
     text-decoration: none;
     margin-right: 20px;
@@ -45,12 +45,17 @@
     line-height: 1.5;
   }
 
-  .navbar > .left > a.logo {
+  nav > .left {
+    display: flex;
+    align-items: center;
+  }
+
+  nav > .left > a.logo {
     font-weight: bold;
     font-size: 16px;
   }
 
-  .navbar a:hover {
+  nav a:hover {
     text-decoration: underline;
   }
 </style>
