@@ -19,20 +19,17 @@
     menuY = rect.bottom + window.scrollY;
   }
 
-  function closeMenu() {
-    menuVisible = false;
-  }
-
   function openContainer(appId: string) {
     window.open(`//${appId}.${page.data.domain}`, "_blank");
-    closeMenu();
+    menuVisible = false;
   }
 
   // Close menu on outside click
   onMount(() => {
-    const handler = (e: MouseEvent) => {
-      if (menuVisible) closeMenu();
+    const handler = () => {
+      if (menuVisible) menuVisible = false;
     };
+
     window.addEventListener("click", handler);
     return () => window.removeEventListener("click", handler);
   });
