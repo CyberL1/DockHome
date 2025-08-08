@@ -51,7 +51,7 @@ func main() {
 	})
 
 	r.HandleFunc("/api/data", func(w http.ResponseWriter, r *http.Request) {
-		cli, _ := client.NewClientWithOpts(client.FromEnv)
+		cli, _ := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 
 		containers, _ := cli.ContainerList(context.Background(), container.ListOptions{
 			All: true,
