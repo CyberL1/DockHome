@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Props } from "./types";
+  import { tick } from "svelte";
 
   let { id = "menu", data, items }: Props = $props();
 
@@ -7,13 +8,32 @@
   let menuX = $state(0);
   let menuY = $state(0);
 
-  export function open(event: MouseEvent, menuData: object) {
+  // svelte-ignore non_reactive_update
+  let menu: HTMLElement;
+
+  export async function open(event: MouseEvent, menuData: object) {
     const rect = (event.target as HTMLElement).getBoundingClientRect();
-    menuX = event.clientX;
-    menuY = rect.bottom + window.scrollY;
 
     data = menuData;
     menuVisible = true;
+
+    await tick();
+
+    const menuRect = menu.getBoundingClientRect();
+
+    let x = event.clientX;
+    let y = rect.bottom + window.scrollY;
+
+    if (x + menuRect.width > window.innerWidth) {
+      x = window.innerWidth - menuRect.width - 10;
+    }
+
+    if (y + menuRect.height > window.innerHeight + window.scrollY) {
+      y = rect.top + window.scrollY - menuRect.height;
+    }
+
+    menuX = x;
+    menuY = y;
   }
 
   export function close() {
@@ -22,7 +42,7 @@
 </script>
 
 {#if menuVisible}
-  <div {id} style="left: {menuX}px; top: {menuY}px;">
+  <div bind:this={menu} {id} style="left: {menuX}px; top: {menuY}px;">
     {#each items as item}
       <button onclick={item.onclick}>{item.title}</button>
     {/each}
