@@ -1,39 +1,9 @@
 <script lang="ts">
   import { invalidate } from "$app/navigation";
   import { page } from "$app/state";
+  import Menu from "$lib/components/Menu";
   import type { ContainerData } from "$lib/types/ContainerData";
   import { onMount } from "svelte";
-
-  let menuVisible = $state(false);
-  let menuX = $state(0);
-  let menuY = $state(0);
-  let menuData = $state({} as ContainerData);
-
-  function openMenu(event: MouseEvent, data: ContainerData) {
-    event.stopPropagation();
-
-    menuVisible = true;
-    menuData = data;
-
-    const rect = (event.target as HTMLElement).getBoundingClientRect();
-    menuX = event.clientX;
-    menuY = rect.bottom + window.scrollY;
-  }
-
-  function openContainer(appId: string) {
-    window.open(`//${appId}.${page.data.domain}`, "_blank");
-    menuVisible = false;
-  }
-
-  // Close menu on outside click
-  onMount(() => {
-    const handler = () => {
-      if (menuVisible) menuVisible = false;
-    };
-
-    window.addEventListener("click", handler);
-    return () => window.removeEventListener("click", handler);
-  });
 
   // Invalidate data every 3 seconds
   onMount(() => {
@@ -43,6 +13,19 @@
 
     return () => clearInterval(interval);
   });
+
+  let menu: Menu;
+  let menuData: ContainerData;
+
+  function openMenu(event: MouseEvent, data: ContainerData) {
+    menuData = data;
+    menu.open(event, data);
+  }
+
+  function openContainer(appId: string) {
+    window.open(`//${appId}.${page.data.domain}`, "_blank");
+    menu.close();
+  }
 </script>
 
 <div class="apps">
@@ -69,13 +52,17 @@
   {/each}
 </div>
 
-{#if menuVisible}
-  <div class="menu" style="left: {menuX}px; top: {menuY}px;">
-    <button onclick={() => openContainer(menuData.alias || menuData.name)}>
-      Open
-    </button>
-  </div>
-{/if}
+
+<Menu
+  bind:this={menu}
+  data={menuData}
+  items={[
+    {
+      title: "Open",
+      onclick: () => openContainer(menuData.alias || menuData.name),
+    },
+  ]}
+/>
 
 <style>
   .apps {
@@ -135,30 +122,5 @@
 
   .apps > .app > .content > a:hover > span {
     color: green;
-  }
-
-  .menu {
-    position: absolute;
-    background: white;
-    border: 1px solid #ccc;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    min-width: 150px;
-    border-radius: 8px;
-    user-select: none;
-    z-index: 1000;
-  }
-
-  .menu > button {
-    cursor: pointer;
-    display: flex;
-    background: none;
-    border: none;
-    width: 100%;
-    padding: 10px 16px;
-    font-size: 1em;
-  }
-
-  .menu > button:hover {
-    background-color: lightgrey;
   }
 </style>
