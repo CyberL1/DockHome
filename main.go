@@ -23,6 +23,8 @@ func main() {
 
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if os.Getenv("DEV_MODE") == "true" {
+			os.Setenv("DOMAIN", "localhost")
+
 			frontendUrl, _ := url.Parse("http://localhost:5173")
 			httputil.NewSingleHostReverseProxy(frontendUrl).ServeHTTP(w, r)
 		} else {
