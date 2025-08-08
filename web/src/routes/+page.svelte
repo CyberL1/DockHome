@@ -52,7 +52,6 @@
   {/each}
 </div>
 
-
 <Menu
   bind:this={menu}
   data={menuData}
