@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"mime"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -20,25 +22,30 @@ func main() {
 	r := http.NewServeMux()
 
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		path := r.URL.Path[1:]
-		if path == "" {
-			path = "index"
-		}
+		if os.Getenv("DEV_MODE") == "true" {
+			frontendUrl, _ := url.Parse("http://localhost:5173")
+			httputil.NewSingleHostReverseProxy(frontendUrl).ServeHTTP(w, r)
+		} else {
+			path := r.URL.Path[1:]
+			if path == "" {
+				path = "index"
+			}
 
-		ext := filepath.Ext(r.URL.Path)
-		if ext == "" {
-			ext = ".html"
-			path += ext
-		}
+			ext := filepath.Ext(r.URL.Path)
+			if ext == "" {
+				ext = ".html"
+				path += ext
+			}
 
-		var fileContent []byte
-		fileContent, err := web.BuildDir.ReadFile(filepath.Join("build", path))
-		if err != nil {
-			http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-		}
+			var fileContent []byte
+			fileContent, err := web.BuildDir.ReadFile(filepath.Join("build", path))
+			if err != nil {
+				http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+			}
 
-		w.Header().Set("Content-Type", mime.TypeByExtension(ext))
-		w.Write(fileContent)
+			w.Header().Set("Content-Type", mime.TypeByExtension(ext))
+			w.Write(fileContent)
+		}
 	})
 
 	r.HandleFunc("/api/data", func(w http.ResponseWriter, r *http.Request) {
