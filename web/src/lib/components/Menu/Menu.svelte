@@ -4,9 +4,9 @@
 
   let { id = "menu", data, items }: Props = $props();
 
-  let menuVisible = $state(false);
-  let menuX = $state(0);
-  let menuY = $state(0);
+  let isVisible = $state(false);
+  let posX = $state(0);
+  let posY = $state(0);
 
   // svelte-ignore non_reactive_update
   let menu: HTMLElement;
@@ -15,34 +15,31 @@
     const rect = (event.target as HTMLElement).getBoundingClientRect();
 
     data = menuData;
-    menuVisible = true;
+    isVisible = true;
 
     await tick();
 
     const menuRect = menu.getBoundingClientRect();
 
-    let x = event.clientX;
-    let y = rect.bottom + window.scrollY;
+    posX = event.clientX;
+    posY = rect.bottom + window.scrollY;
 
-    if (x + menuRect.width > window.innerWidth) {
-      x = window.innerWidth - menuRect.width - 10;
+    if (posX + menuRect.width > window.innerWidth) {
+      posX = window.innerWidth - menuRect.width - 10;
     }
 
-    if (y + menuRect.height > window.innerHeight + window.scrollY) {
-      y = rect.top + window.scrollY - menuRect.height;
+    if (posY + menuRect.height > window.innerHeight + window.scrollY) {
+      posY = rect.top + window.scrollY - menuRect.height;
     }
-
-    menuX = x;
-    menuY = y;
   }
 
   export function close() {
-    menuVisible = false;
+    isVisible = false;
   }
 </script>
 
-{#if menuVisible}
-  <div bind:this={menu} {id} style="left: {menuX}px; top: {menuY}px;">
+{#if isVisible}
+  <div bind:this={menu} {id} style="left: {posX}px; top: {posY}px;">
     {#each items as item}
       <button onclick={item.onclick}>{item.title}</button>
     {/each}
