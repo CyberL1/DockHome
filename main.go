@@ -12,6 +12,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/docker/docker/api/types/container"
@@ -70,6 +71,10 @@ func main() {
 			}
 
 			response.Containers = append(response.Containers, containerData)
+
+			sort.SliceStable(response.Containers, func(i, j int) bool {
+				return response.Containers[i].Name < response.Containers[j].Name
+			})
 		}
 
 		w.Header().Set("content-type", "application/json")
