@@ -14,6 +14,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
@@ -51,34 +52,50 @@ func main() {
 		}
 	})
 
-	r.HandleFunc("/api/data", func(w http.ResponseWriter, r *http.Request) {
-		cli, _ := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
-
-		containers, _ := cli.ContainerList(context.Background(), container.ListOptions{
-			All: true,
-		})
-
+	r.HandleFunc("/api/domain", func(w http.ResponseWriter, r *http.Request) {
 		response := types.NeededData{
 			Domain: os.Getenv("DOMAIN"),
 		}
 
-		for _, container := range containers {
-			containerData := types.ContainerData{
-				Id:    container.ID,
-				Name:  strings.Split(container.Names[0], "/")[1],
-				Icon:  container.Labels["Home.icon"],
-				Alias: container.Labels["Dockport.alias"],
-			}
-
-			response.Containers = append(response.Containers, containerData)
-
-			sort.SliceStable(response.Containers, func(i, j int) bool {
-				return response.Containers[i].Name < response.Containers[j].Name
-			})
-		}
-
 		w.Header().Set("content-type", "application/json")
 		json.NewEncoder(w).Encode(response)
+	})
+
+	r.HandleFunc("/api/containers", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/event-stream")
+		w.Header().Set("Cache-Control", "no-cache")
+		w.Header().Set("Connection", "keep-alive")
+
+		cli, _ := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+
+		for {
+			containers, _ := cli.ContainerList(context.Background(), container.ListOptions{
+				All: true,
+			})
+
+			var response []types.ContainerData
+
+			for _, container := range containers {
+				response = append(response, types.ContainerData{
+					Id:    container.ID,
+					Name:  strings.Split(container.Names[0], "/")[1],
+					Icon:  container.Labels["Home.icon"],
+					Alias: container.Labels["Dockport.alias"],
+				})
+			}
+
+			sort.SliceStable(response, func(i, j int) bool {
+				return response[i].Name < response[j].Name
+			})
+
+			jsonResponse, _ := json.Marshal(response)
+
+			fmt.Fprintf(w, "event: message\n")
+			fmt.Fprintf(w, "data: %s\n\n", jsonResponse)
+
+			time.Sleep(1 * time.Second)
+			w.(http.Flusher).Flush()
+		}
 	})
 
 	fmt.Println("DockHome is ready on port :80")
