@@ -1,17 +1,19 @@
 <script lang="ts">
-  import { invalidate } from "$app/navigation";
   import { page } from "$app/state";
   import Menu from "$lib/components/Menu";
   import type { ContainerData } from "$lib/types/ContainerData";
   import { onMount } from "svelte";
 
-  // Invalidate data every 3 seconds
-  onMount(() => {
-    const interval = setInterval(() => {
-      invalidate("/api/data");
-    }, 3000);
+  let containers: ContainerData[] = [];
 
-    return () => clearInterval(interval);
+  onMount(() => {
+    const sse = new EventSource("/api/containers");
+
+    sse.onmessage = ({ data }) => {
+      containers = JSON.parse(data);
+    };
+
+    sse.onerror = () => console.error("SSE Disconnected");
   });
 
   let menu: Menu;
@@ -24,7 +26,7 @@
 </script>
 
 <div class="apps">
-  {#each page.data.containers as container}
+  {#each containers as container}
     <div class="app" id={container.id}>
       <div class="content">
         <div class="top">
