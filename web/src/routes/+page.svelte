@@ -21,11 +21,6 @@
     menuData = data;
     menu.open(event, data);
   }
-
-  function openContainer(appId: string) {
-    window.open(`//${appId}.${page.data.domain}`, "_blank");
-    menu.close();
-  }
 </script>
 
 <div class="apps">
@@ -58,7 +53,10 @@
   items={[
     {
       title: "Open",
-      onclick: () => openContainer(menuData.alias || menuData.name),
+      onclick: () => {
+        window.open(`//${menuData.alias || menuData.name}.${page.data.domain}`);
+        menu.close();
+      },
     },
   ]}
 />
