@@ -92,7 +92,7 @@ func main() {
 
 			fmt.Fprintf(w, "event: message\n")
 			fmt.Fprintf(w, "data: %s\n\n", jsonResponse)
-			
+
 			w.(http.Flusher).Flush()
 			time.Sleep(1 * time.Second)
 		}
