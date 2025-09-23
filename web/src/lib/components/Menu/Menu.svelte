@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Props } from "./types";
-  import { tick } from "svelte";
+  import { onMount, tick } from "svelte";
 
   let { id = "menu", data, items }: Props = $props();
 
@@ -12,6 +12,8 @@
   let menu: HTMLElement;
 
   export async function open(event: MouseEvent, menuData: object) {
+    event.stopPropagation();
+
     const rect = (event.target as HTMLElement).getBoundingClientRect();
 
     data = menuData;
@@ -36,6 +38,17 @@
   export function close() {
     isVisible = false;
   }
+
+  onMount(() => {
+    const handler = (event: MouseEvent) => {
+      if (isVisible && !menu.contains(event.target as Node)) {
+        close();
+      }
+    };
+
+    window.addEventListener("click", handler);
+    return () => window.removeEventListener("click", handler);
+  });
 </script>
 
 {#if isVisible}
